@@ -13,11 +13,6 @@ image.src = "./img/Petalwood Town.png"; //html element i.e. the image(map)
 const playerImage = new Image();
 playerImage.src = "./img/playerDown.png";
 
-image.onload = () => {
-  // map needs to be loaded first before drawing
-  //needs html element to be referenced
-};
-
 function animate() {
   window.requestAnimationFrame(animate);
   c.drawImage(image, -199, 0); //needs html element to be referenced
