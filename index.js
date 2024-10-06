@@ -67,28 +67,34 @@ function animate() {
     playerHeight
   );
 
-  if (keys.w.pressed) background.position.y += 3;
-  else if (keys.a.pressed) background.position.x += 3;
-  else if (keys.s.pressed) background.position.y -= 3;
-  else if (keys.d.pressed) background.position.x -= 3;
+  if (keys.w.pressed && lastkey === 'w' ) background.position.y += 1.5;
+  else if (keys.a.pressed && lastkey === 'a') background.position.x += 1.5;
+  else if (keys.s.pressed && lastkey === 's') background.position.y -= 1.5;
+  else if (keys.d.pressed && lastkey === 'd') background.position.x -= 1.5;
 }
 animate();
+
+let lastkey = ''
 window.addEventListener("keydown", (e) => {
   switch (e.key) {
     case "w":
       keys.w.pressed = true;
+      lastkey = 'w';
       break;
 
     case "a":
       keys.a.pressed = true;
+      lastkey = 'a';
       break;
 
     case "s":
       keys.s.pressed = true;
+      lastkey = 's';
       break;
 
     case "d":
       keys.d.pressed = true;
+      lastkey = 'd';
       break;
   }
 });
@@ -111,4 +117,9 @@ window.addEventListener("keyup", (e) => {
       keys.d.pressed = false;
       break;
   }
+
+  if(keys.w.pressed) lastkey = 'w';
+  else if(keys.a.pressed) lastkey = 'a';
+  else if(keys.s.pressed) lastkey = 's';
+  else if(keys.d.pressed) lastkey = 'd';
 });
