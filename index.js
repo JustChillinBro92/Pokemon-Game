@@ -13,8 +13,8 @@ for (let i = 0; i <= collisions.length; i += 120) {
 //console.log(collisionsMap)
 
 class Boundary {
-  static width = 45.6;
-  static height = 45.6;
+  static width = 36;
+  static height = 36;
 
   constructor({ position }) {
     this.position = position;
@@ -31,8 +31,8 @@ class Boundary {
 const boundaries = [];
 const offset = {
   x: -249,
-  y: 13
-}
+  y: 13,
+};
 
 collisionsMap.forEach((row, i) => {
   row.forEach((symbol, j) => {
@@ -40,8 +40,8 @@ collisionsMap.forEach((row, i) => {
       boundaries.push(
         new Boundary({
           position: {
-            x: j * Boundary.width + offset.x - 110,
-            y: i * Boundary.height + offset.y - 10,
+            x: j * Boundary.width + offset.x,
+            y: i * Boundary.height + offset.y - 13,
           },
         })
       );
@@ -56,15 +56,53 @@ const playerImage = new Image();
 playerImage.src = "./img/playerDown.png";
 
 class Sprite {
-  constructor({ position, velocity, image }) {
+  constructor({ position, velocity, image, frames = { max: 1 } }) {
     this.position = position;
     this.image = image;
+    this.frames = frames;
+
+    this.image.onload = () => {
+      this.width = (this.image.width * 0.8) / this.frames.max;
+      this.height = this.image.height * 0.8;
+
+      console.log(this.width, this.height);
+    };
   }
 
   draw() {
-    c.drawImage(this.image, this.position.x, this.position.y);
+    let actualwidth, actualheight;
+    if (this.frames.max === 4) {
+      actualwidth = this.image.width * 0.8;
+      actualheight = this.image.height * 0.8;
+    } else {
+      actualwidth = this.image.width;
+      actualheight = this.image.height;
+    }
+
+    c.drawImage(
+      this.image,
+      0, //cropping the sprite-sheet of the player x axis
+      0, //cropping the sprite-sheet of the player y axis
+      this.image.width / this.frames.max,
+      this.image.height,
+      this.position.x,
+      this.position.y,
+      actualwidth / this.frames.max,
+      actualheight
+    );
   }
 }
+
+const player = new Sprite({
+  position: {
+    x: canvas.width / 2 - playerImage.width / 4 / 2,
+    y: canvas.height / 2 - playerImage.height / 2,
+  },
+  image: playerImage,
+  frames: {
+    max: 4,
+  },
+});
 
 const background = new Sprite({
   position: {
@@ -89,34 +127,51 @@ const keys = {
   },
 };
 
+
+const movables = [background, ...boundaries];
+
+function RectangularCollision ({rectangle1, rectangle2}) {
+  return(rectangle1.position.x + rectangle1.width >= rectangle2.position.x &&
+    rectangle1.position.x <= rectangle2.position.x + rectangle2.width &&
+    rectangle1.position.y + rectangle1.height >= rectangle2.position.y &&
+    rectangle1.position.y <= rectangle2.position.y + rectangle2.height)
+}
+
 function animate() {
   window.requestAnimationFrame(animate);
   background.draw();
-
+  player.draw();
+  
   boundaries.forEach(boundary => {
     boundary.draw();
-  })
 
-  // Scale the player image
-  const playerWidth = playerImage.width * 0.8; // Scale down by 80% (adjust this value as needed)
-  const playerHeight = playerImage.height * 0.8;
+    if (
+      RectangularCollision({
+        rectangle1 : player, 
+        rectangle2 : boundary
+      })
+    ) {
+      console.log("colliding");
+    }
+  }) 
 
-  c.drawImage(
-    playerImage,
-    0, //cropping the sprite-sheet of the player
-    0,
-    playerImage.width / 4,
-    playerImage.height,
-    canvas.width / 2 - playerImage.width / 4 / 2,
-    canvas.height / 2 - playerImage.height / 2,
-    playerWidth / 4, //actual height and width of player being rendered out
-    playerHeight
-  );
-
-  if (keys.w.pressed && lastkey === "w") background.position.y += 1.5;
-  else if (keys.a.pressed && lastkey === "a") background.position.x += 1.5;
-  else if (keys.s.pressed && lastkey === "s") background.position.y -= 1.5;
-  else if (keys.d.pressed && lastkey === "d") background.position.x -= 1.5;
+  if (keys.w.pressed && lastkey === "w") {
+    movables.forEach((movable) => {
+      movable.position.y += 1.5;
+    });
+  } else if (keys.a.pressed && lastkey === "a") {
+    movables.forEach((movable) => {
+      movable.position.x += 1.5;
+    });
+  } else if (keys.s.pressed && lastkey === "s") {
+    movables.forEach((movable) => {
+      movable.position.y -= 1.5;
+    });
+  } else if (keys.d.pressed && lastkey === "d") {
+    movables.forEach((movable) => {
+      movable.position.x -= 1.5;
+    });
+  }
 }
 animate();
 
