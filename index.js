@@ -1,8 +1,6 @@
 const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
 
-console.log(collisions);
-
 canvas.width = 1024;
 canvas.height = 576;
 
@@ -12,26 +10,10 @@ for (let i = 0; i <= collisions.length; i += 120) {
 }
 //console.log(collisionsMap)
 
-class Boundary {
-  static width = 36;
-  static height = 36;
-
-  constructor({ position }) {
-    this.position = position;
-    this.width = Boundary.width;
-    this.height = Boundary.height;
-  }
-
-  draw() {
-    c.fillStyle = "red";
-    c.fillRect(this.position.x, this.position.y, this.width, this.height);
-  }
-}
-
 const boundaries = [];
 const offset = {
   x: -249,
-  y: 13,
+  y: 21,
 };
 
 collisionsMap.forEach((row, i) => {
@@ -41,7 +23,7 @@ collisionsMap.forEach((row, i) => {
         new Boundary({
           position: {
             x: j * Boundary.width + offset.x,
-            y: i * Boundary.height + offset.y - 13,
+            y: i * Boundary.height + offset.y,
           },
         })
       );
@@ -50,48 +32,13 @@ collisionsMap.forEach((row, i) => {
 //console.log(boundaries);
 
 const image = new Image();
-image.src = "./img/Petalwood Town.png"; //html element i.e. the image(map)
+image.src = "./img/PetalwoodTown.png"; //html element i.e. the image(map)
+
+const foregroundimage = new Image();
+foregroundimage.src = "./img/ForegroundObjects.png";
 
 const playerImage = new Image();
 playerImage.src = "./img/playerDown.png";
-
-class Sprite {
-  constructor({ position, velocity, image, frames = { max: 1 } }) {
-    this.position = position;
-    this.image = image;
-    this.frames = frames;
-
-    this.image.onload = () => {
-      this.width = (this.image.width * 0.8) / this.frames.max;
-      this.height = this.image.height * 0.8;
-
-      console.log(this.width, this.height);
-    };
-  }
-
-  draw() {
-    let actualwidth, actualheight;
-    if (this.frames.max === 4) {
-      actualwidth = this.image.width * 0.8;
-      actualheight = this.image.height * 0.8;
-    } else {
-      actualwidth = this.image.width;
-      actualheight = this.image.height;
-    }
-
-    c.drawImage(
-      this.image,
-      0, //cropping the sprite-sheet of the player x axis
-      0, //cropping the sprite-sheet of the player y axis
-      this.image.width / this.frames.max,
-      this.image.height,
-      this.position.x,
-      this.position.y,
-      actualwidth / this.frames.max,
-      actualheight
-    );
-  }
-}
 
 const player = new Sprite({
   position: {
@@ -112,6 +59,14 @@ const background = new Sprite({
   image: image,
 });
 
+const foreground = new Sprite({
+  position: {
+    x: offset.x,
+    y: offset.y,
+  },
+  image: foregroundimage,
+});
+
 const keys = {
   w: {
     pressed: false,
@@ -128,7 +83,7 @@ const keys = {
 };
 
 
-const movables = [background, ...boundaries];
+const movables = [background,foreground, ...boundaries];
 
 function RectangularCollision ({rectangle1, rectangle2}) {
   return(rectangle1.position.x + rectangle1.width >= rectangle2.position.x &&
@@ -139,38 +94,111 @@ function RectangularCollision ({rectangle1, rectangle2}) {
 
 function animate() {
   window.requestAnimationFrame(animate);
-  background.draw();
-  player.draw();
-  
+
+  background.draw(); 
   boundaries.forEach(boundary => {
     boundary.draw();
-
-    if (
-      RectangularCollision({
-        rectangle1 : player, 
-        rectangle2 : boundary
-      })
-    ) {
-      console.log("colliding");
-    }
   }) 
+  player.draw();
+  foreground.draw();
 
+  let moving = true;
   if (keys.w.pressed && lastkey === "w") {
-    movables.forEach((movable) => {
-      movable.position.y += 1.5;
-    });
+    for(let i = 0; i < boundaries.length; i++){
+      const boundary = boundaries[i];
+      if (
+        RectangularCollision({
+          rectangle1 : player, 
+          rectangle2 : {...boundary,
+            position: {
+              x: boundary.position.x,
+              y: boundary.position.y + 1.5
+            }
+          }
+        })
+      ) {
+        moving = false;
+        console.log("colliding");
+        break;
+      }
+    }
+    if(moving === true) {
+      movables.forEach((movable) => {
+        movable.position.y += 1.5;
+      });
+    } 
   } else if (keys.a.pressed && lastkey === "a") {
-    movables.forEach((movable) => {
-      movable.position.x += 1.5;
-    });
+    for(let i = 0; i < boundaries.length; i++){
+      const boundary = boundaries[i];
+      if (
+        RectangularCollision({
+          rectangle1 : player, 
+          rectangle2 : {...boundary,
+            position: {
+              x: boundary.position.x + 1.5,
+              y: boundary.position.y 
+            }
+          }
+        })
+      ) {
+        moving = false;
+        console.log("colliding");
+        break;
+      }
+    }
+    if(moving === true) {
+      movables.forEach((movable) => {
+        movable.position.x += 1.5;
+      });
+    }
   } else if (keys.s.pressed && lastkey === "s") {
-    movables.forEach((movable) => {
-      movable.position.y -= 1.5;
-    });
+    for(let i = 0; i < boundaries.length; i++){
+      const boundary = boundaries[i];
+      if (
+        RectangularCollision({
+          rectangle1 : player, 
+          rectangle2 : {...boundary,
+            position: {
+              x: boundary.position.x ,
+              y: boundary.position.y - 1.5 
+            }
+          }
+        })
+      ) {
+        moving = false;
+        console.log("colliding");
+        break;
+      }
+    }
+    if(moving === true) {
+      movables.forEach((movable) => {
+        movable.position.y -= 1.5;
+      });
+    }
   } else if (keys.d.pressed && lastkey === "d") {
-    movables.forEach((movable) => {
-      movable.position.x -= 1.5;
-    });
+    for(let i = 0; i < boundaries.length; i++){
+      const boundary = boundaries[i];
+      if (
+        RectangularCollision({
+          rectangle1 : player, 
+          rectangle2 : {...boundary,
+            position: {
+              x: boundary.position.x - 1.5,
+              y: boundary.position.y 
+            }
+          }
+        })
+      ) {
+        moving = false;
+        console.log("colliding");
+        break;
+      }
+    }
+    if(moving === true) {
+      movables.forEach((movable) => {
+        movable.position.x -= 1.5;
+      });
+    }
   }
 }
 animate();
