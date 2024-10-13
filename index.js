@@ -1,6 +1,7 @@
 const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
 
+//console.log(gsap)
 //console.log(battleZonesData);
 
 canvas.width = 1024;
@@ -54,7 +55,7 @@ battleZonesMap.forEach((row, i) => {
       );
   });
 });
-console.log(battleZones);
+//console.log(battleZones);
 
 const image = new Image();
 image.src = "./img/PetalwoodTown.png"; //html element i.e. the image(map)
@@ -139,7 +140,7 @@ const battle = {
 }
 
 function animate() {
-  window.requestAnimationFrame(animate);
+  const animateId = window.requestAnimationFrame(animate);
 
   background.draw();
   boundaries.forEach((boundary) => {
@@ -182,7 +183,32 @@ function animate() {
         Math.random() < 0.01
       ) {
         console.log("battleZone Activate");
+        window.cancelAnimationFrame(animateId) //deactivates current animation loop
         battle.initiated = true;
+        
+        //flashing animation on battle activation
+        gsap.to('#OverlappingDiv', {
+          opacity: 1,
+          repeat: 3,
+          yoyo: true,  //smoothes out animation by bringing counter to 0 i.e., default state
+          duration: 0.4,
+          onComplete() {
+            gsap.to('#OverlappingDiv', {  
+              //keeps the canvas covered by the 'overlapping div' as no yoyo property present...done to change the canvas behind it to battle scene
+              opacity: 1,
+              duration: 0.4,
+              onComplete() {
+                //activate a new animation loop (battle sequence)
+                animateBattle();
+                gsap.to('#OverlappingDiv', {
+                  opacity: 0,
+                  duration: 0.4
+                })
+              }
+            })
+          }
+        })
+
         break;
       }
     }
@@ -299,6 +325,22 @@ function animate() {
   }
 }
 animate();
+const BattleBackgroundImg = new Image();
+BattleBackgroundImg.src = "./img/battleBackground.png";
+
+const BattleBackground = new Sprite({
+  position: {
+    x: 0,
+    y: 0,
+  },
+  image: BattleBackgroundImg,
+});
+
+function animateBattle() {
+  window.requestAnimationFrame(animateBattle);
+  console.log("animating battle sequence");
+  BattleBackground.draw();
+}
 
 let lastkey = "";
 window.addEventListener("keydown", (e) => {
