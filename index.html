@@ -4,9 +4,30 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title></title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 	<style>
+		*{
+			font-family: "Press Start 2P", system-ui;
+			font-weight: 400;
+            font-style: normal;
+
+		}
 		body {
 			background-color: black
+		}
+		h1{
+			margin: 0;
+			font-size: 16px;
+		}
+		button{
+			border-radius: 10px;
+			cursor: pointer;
+			font-size: 16px;
+		}
+		button:hover{
+			background-color: #ddd;
 		}
 	</style>
 </head>
@@ -15,11 +36,49 @@
 	<div style="display: inline-block; position: relative">
 		<div 
 			id="OverlappingDiv"
-		  	style="background-color: black; position: absolute;
-		  	top: 0; bottom: 0; left: 0; right: 0; opacity: 0; pointer-events: none;">
+		  	style="
+			background-color: black; 
+			position: absolute;
+		  	top: 0; 
+			bottom: 0; 
+			left: 0; 
+			right: 0; 
+			opacity: 0; 
+			pointer-events: none;">
 		 </div>
 		<canvas></canvas>
-	</div>
+
+		<div style="
+		background-color: white;
+		height: 150px;
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		border-top: 2px black solid;
+		display: flex;
+		">
+			<div style="
+			width: 66.66%;
+			display: grid;
+			grid-template-columns: repeat(2,1fr);
+			padding: 2px
+			">
+				<button>Attack1</button>
+				<button>Attack2</button>
+				<button>Attack3</button>
+				<button>Attack4</button>
+			</div>
+			<div style="
+			width: 33.33%;
+			border-left: 2px black solid;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			">
+				<h1>Attack Type</h1>
+			</div>
+	    </div>	
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js" 
 	integrity="sha512-H6cPm97FAsgIKmlBA4s774vqoN24V5gSQL4yBTDOY2su2DeXZVhQPxFK4P6GPdnZqM9fg1G3cMv5wD7e6cFLZQ==" 
 	crossorigin="anonymous" referrerpolicy="no-referrer"></script>

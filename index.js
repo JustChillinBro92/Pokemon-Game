@@ -83,6 +83,7 @@ const player = new Sprite({
   image: playerDownImage,
   frames: {
     max: 4,
+    hold: 25
   },
   sprites: {
     up: playerUpImage,
@@ -153,13 +154,14 @@ function animate() {
   foreground.draw();
 
   let moving = true; // for collison blocks
-  player.moving = false; // for player movement animation
+  player.animate = false; // for player movement animation
 
   if(battle.initiated) return
 
   //activates a battle
   if (keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed) {
     for (let i = 0; i < battleZones.length; i++) {
+
       const battleZone = battleZones[i];
       const OverlappingArea =
         (Math.min(
@@ -215,7 +217,7 @@ function animate() {
   }
 
   if (keys.w.pressed && lastkey === "w") {
-    player.moving = true;
+    player.animate = true;
     player.image = player.sprites.up;
     for (let i = 0; i < boundaries.length; i++) {
       const boundary = boundaries[i];
@@ -242,7 +244,7 @@ function animate() {
       });
     }
   } else if (keys.a.pressed && lastkey === "a") {
-    player.moving = true;
+    player.animate = true;
     player.image = player.sprites.left;
     for (let i = 0; i < boundaries.length; i++) {
       const boundary = boundaries[i];
@@ -269,7 +271,7 @@ function animate() {
       });
     }
   } else if (keys.s.pressed && lastkey === "s") {
-    player.moving = true;
+    player.animate = true;
     player.image = player.sprites.down;
     for (let i = 0; i < boundaries.length; i++) {
       const boundary = boundaries[i];
@@ -296,7 +298,7 @@ function animate() {
       });
     }
   } else if (keys.d.pressed && lastkey === "d") {
-    player.moving = true;
+    player.animate = true;
     player.image = player.sprites.right;
     for (let i = 0; i < boundaries.length; i++) {
       const boundary = boundaries[i];
@@ -324,7 +326,8 @@ function animate() {
     }
   }
 }
-animate();
+//animate();
+
 const BattleBackgroundImg = new Image();
 BattleBackgroundImg.src = "./img/battleBackground.png";
 
@@ -336,11 +339,48 @@ const BattleBackground = new Sprite({
   image: BattleBackgroundImg,
 });
 
+const draggleImg = new Image();
+draggleImg.src = "./img/draggleSprite.png"
+
+const embyImg = new Image();
+embyImg.src = "./img/embySprite.png"
+
+const draggle = new Sprite({
+  position: {
+    x: 800, 
+    y: 115
+  },
+  image: draggleImg,
+  frames: {
+    max: 4,
+    hold: 70
+  },
+  scale: 0.85,
+  animate: true
+})
+
+const emby = new Sprite({
+  position: {
+    x: 290, 
+    y: 340
+  },
+  image: embyImg,
+  frames: {
+    max: 4,
+    hold: 60
+  },
+  scale: 0.9,
+  animate: true
+})
+
 function animateBattle() {
   window.requestAnimationFrame(animateBattle);
   console.log("animating battle sequence");
   BattleBackground.draw();
+  draggle.draw();
+  emby.draw();
 }
+animateBattle();
 
 let lastkey = "";
 window.addEventListener("keydown", (e) => {

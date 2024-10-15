@@ -9,13 +9,13 @@ class Boundary {
   }
 
   draw() {
-    c.fillStyle = "rgba(255, 0, 0, 0.2)";
+    c.fillStyle = "rgba(255, 0, 0, 0)";
     c.fillRect(this.position.x, this.position.y, this.width, this.height);
   }
 }
 
 class Sprite {
-  constructor({ position, velocity, image, frames = { max: 1 }, scale = 1, sprites}) {
+  constructor({ position, velocity, image, frames = { max: 1 , hold: 25}, scale = 1, sprites, animate = false }) {
     this.position = position;
     this.image = image;
     this.frames = { ...frames, val: 0, elapsed: 0 };
@@ -28,7 +28,7 @@ class Sprite {
       console.log(this.width, this.height);
     };
 
-    this.moving = false;
+    this.animate = animate;
     this.sprites = sprites;
   }
 
@@ -53,13 +53,13 @@ class Sprite {
       scaledHeight
     );
 
-    if(!this.moving) return // if player is not moving we do not call the following code
+    if(!this.animate) return // if player is not moving we do not call the following code
 
     if (this.frames.max > 1) {
       // it means that a sprite-sheet for animation is present
       this.frames.elapsed++;
     }
-    if (this.frames.elapsed % 25 === 0) {
+    if (this.frames.elapsed % this.frames.hold === 0) {
       if (this.frames.val < this.frames.max - 1) this.frames.val++;
       else this.frames.val = 0;
     }
