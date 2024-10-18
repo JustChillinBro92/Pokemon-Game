@@ -9,73 +9,126 @@ const BattleBackground = new Sprite({
   image: BattleBackgroundImg,
 });
 
-const draggleImg = new Image();
-draggleImg.src = "./img/draggleSprite.png"
+//creating the monster sprites
+let Draggle;
+let Emby;
+let renderedSprites; //array for storing rendered out projectile attacks
+let queue; //queue for pushing enemy attacks
 
-const embyImg = new Image();
-embyImg.src = "./img/embySprite.png"
+function initBattle() {
+  document.querySelector("#Interface").style.display = "block";
+  document.querySelector("#DialogueBox").style.display = "none";
+  document.querySelector("#enemyHealthBar").style.display = "block";
+  document.querySelector("#playerHealthBar").style.display = "block";
+  document.querySelector("#enemyHealthBar").style.width = "98.5%";
+  document.querySelector("#playerHealthBar").style.width = "98.5%";
+  document.querySelector("#attacksBox").replaceChildren(); //removes the appended attack buttons with each battle
 
-const Draggle = new Sprite({
-  position: {
-    x: 800, 
-    y: 115
-  },
-  name: 'Draggle',
-  image: draggleImg,
-  frames: {
-    max: 4,
-    hold: 70
-  },
-  scale: 0.85,
-  animate: true,
-  isEnemy: true,
-})
+  Draggle = new Monster(monsters.draggle);
+  Emby = new Monster(monsters.emby);
+  renderedSprites = [Draggle, Emby];
+  queue = []
 
-const Emby = new Sprite({
-  position: {
-    x: 290, 
-    y: 340
-  },
-  name: 'Emby',
-  image: embyImg,
-  frames: {
-    max: 4,
-    hold: 60
-  },
-  scale: 0.9,
-  animate: true,
-})
+  Emby.attack.forEach((attack) => {
+    const button = document.createElement("button");
+    button.innerHTML = attack.name;
+    document.querySelector("#attacksBox").append(button);
 
-const renderedSprites = [Draggle, Emby]; //array for storing rendered out projectile attacks
+    button.addEventListener("mouseenter", () => {
+      document.querySelector("#AttackTypeBox").innerHTML = attack.type;
+      document.querySelector("#AttackTypeBox").style.color = attack.color;
+    });
+
+    //event listeners for our attack buttons
+      button.addEventListener("click", (e) => {
+        //console.log(e.currentTarget.innerHTML);
+        //console.log(attacks[e.currentTarget.innerHTML]);
+        const selectedAttack = attacks[e.currentTarget.innerHTML];
+
+        Emby.Attack({
+          attack: selectedAttack,
+          recipient: Draggle,
+          renderedSprites,
+        });
+
+        if (Draggle.health <= 0) {
+          queue.push(() => {
+            Draggle.faint();
+          });
+          queue.push(() => {
+            gsap.to("#OverlappingDiv", {
+              opacity: 1,
+              OnComplete: () => {
+                window.cancelAnimationFrame(animateBattleId);
+                animate();
+                document.querySelector("#Interface").style.display = "none";
+
+                gsap.to("#OverlappingDiv", {
+                  opacity: 0,
+                });
+                battle.initiated = false;
+              },
+            });
+          });
+        }
+
+        //enemy attacks
+        const randomAttack =
+          Draggle.attack[Math.floor(Math.random() * Draggle.attack.length)];
+
+          queue.push(() => {
+            Draggle.Attack({
+              attack: randomAttack,
+              recipient: Emby,
+              renderedSprites,
+            });
+
+            console.log(queue.length);
+
+            if (Emby.health <= 0) {
+            // after each enemy attack check player monster's health
+              queue.push(() => {
+                Emby.faint();
+              });
+              queue.push(() => {
+                gsap.to("#OverlappingDiv", {
+                  opacity: 1,
+                  OnComplete: () => {
+                    window.cancelAnimationFrame(animateBattleId);
+                    animate();
+                    document.querySelector("#Interface").style.display = "none";
+    
+                    gsap.to("#OverlappingDiv", {
+                      opacity: 0,
+                    });
+                    battle.initiated = false;
+                  },
+                });
+              });
+            }
+          });
+        });
+    });
+}
+
+let animateBattleId;
 
 function animateBattle() {
-  window.requestAnimationFrame(animateBattle);
+  animateBattleId = window.requestAnimationFrame(animateBattle);
   //console.log("animating battle sequence");
   BattleBackground.draw();
 
+  //rendering all the monsters and their attacks
   renderedSprites.forEach((sprite) => {
-    sprite.draw();
-  })
+  sprite.draw();
+  });
 }
+initBattle();     //maintaining this order of calling the two function is must
 animateBattle();
 
-//event listeners for our attack buttons
-document.querySelectorAll('button').forEach(button => {
-  button.addEventListener('click', (e) => {
-    //console.log(e.currentTarget.innerHTML);
-    //console.log(attacks[e.currentTarget.innerHTML]);
-    const selectedAttack = attacks[e.currentTarget.innerHTML];
-
-      Emby.Attack({
-        attack: selectedAttack,
-        recipient: Draggle,
-        renderedSprites,
-      })
-
-      // Draggle.attack({
-      //   attack: selectedAttack,
-      //   recipient: Emby,
-      //   renderedSprites,
-      // })
-  })
-})
+document.querySelector("#DialogueBox").addEventListener("click", (e) => {
+  if (queue.length > 0) {
+    queue[0](); //calling the 0th index of queue i.e., the attack that was pushed in enemy queue
+    queue.shift(); //popping the attack from enemy attack queue
+  } else e.currentTarget.style.display = "none";
+});

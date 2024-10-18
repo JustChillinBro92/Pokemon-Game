@@ -142,6 +142,7 @@ const battle = {
 
 function animate() {
   const animateId = window.requestAnimationFrame(animate);
+  //console.log("aimate");
 
   background.draw();
   boundaries.forEach((boundary) => {
@@ -201,6 +202,7 @@ function animate() {
               duration: 0.4,
               onComplete() {
                 //activate a new animation loop (battle sequence)
+                initBattle();
                 animateBattle();
                 gsap.to('#OverlappingDiv', {
                   opacity: 0,

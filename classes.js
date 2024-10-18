@@ -22,9 +22,7 @@ class Sprite {
     scale = 1,
     sprites,
     animate = false,
-    isEnemy = false,
     rotation = 0,
-    name
   }) {
     this.position = position;
     this.image = image;
@@ -41,26 +39,23 @@ class Sprite {
     this.animate = animate;
     this.sprites = sprites;
     this.opacity = 1;
-    this.health = 100;
-    this.name = name;
-    this.isEnemy = isEnemy;
   }
 
   draw() {
     c.save(); //if any global property added btwn save and restore, it only affects the code inside them
-    
+
     c.translate(
       this.position.x + this.width / 2,
       this.position.y + this.height / 2
-    )
-    c.rotate(this.rotation)
+    );
+    c.rotate(this.rotation);
     c.translate(
       -this.position.x - this.width / 2,
       -this.position.y - this.height / 2
-    )
+    );
 
     c.globalAlpha = this.opacity; //global property
-   
+
     const frameWidth = this.image.width / this.frames.max; // Single frame width
     const frameHeight = this.image.height; // Single frame height
 
@@ -92,27 +87,56 @@ class Sprite {
       else this.frames.val = 0;
     }
   }
+}
+
+class Monster extends Sprite {
+  //all methods of Sprite class are available here as well
+  constructor({
+    isEnemy = false,
+    name,
+    position,
+    image,
+    frames = { max: 1, hold: 25 },
+    scale = 1,
+    sprites,
+    animate = false,
+    rotation = 0,
+    attack,
+  }) {
+    super({      //all the assignment(this.position = position for example) of these properites depend on the parent class(Sprite)
+      position,
+      image,
+      frames,
+      scale,
+      sprites,
+      animate,
+      rotation,
+    });
+    this.health = 100;
+    this.name = name;
+    this.isEnemy = isEnemy;
+    this.attack = attack;
+  }
 
   Attack({ attack, recipient, renderedSprites }) {
+    document.querySelector("#DialogueBox").style.display = "block";
+    document.querySelector("#DialogueBox").innerHTML = this.name + " used " + attack.name + "...";
 
-    document.querySelector("#DialogueBox").style.display = 'block';
-    document.querySelector("#DialogueBox").innerHTML = this.name + ' used ' + attack.name;
-    
     let healthBar = "#enemyHealthBar";
     if (this.isEnemy) healthBar = "#playerHealthBar";
     const healthBarVisibility = document.querySelector(healthBar);
 
-    this.health -= attack.damage; //health updates with each instance of attack being called
+    recipient.health -= attack.damage; //health updates with each instance of attack being called
 
     let rotation = 1.2;
-    if(this.isEnemy) rotation = -2.2; 
+    if (this.isEnemy) rotation = -2.2;
 
     switch (attack.name) {
       case "FireBall":
         const fireballImg = new Image();
         fireballImg.src = "./img/fireball.png";
 
-        const fireball = new Sprite({
+        const fireball = new Monster({
           position: {
             x: this.position.x,
             y: this.position.y,
@@ -134,11 +158,11 @@ class Sprite {
           onComplete: () => {
             //enemy gets hit
             gsap.to(healthBar, {
-              width: this.health + "%",
+              width: recipient.health + "%",
               duration: 0.8,
               onComplete: () => {
-                if (this.health <= 0.1 * this.health) {
-                  healthBarVisibility.style.visibility = "hidden";
+                if (recipient.health <= 0) {
+                  healthBarVisibility.style.display = "none";
                 }
               },
             });
@@ -178,10 +202,10 @@ class Sprite {
             onComplete: () => {
               //arrow function instead of noraml function given so that we can use/increase scope of 'this.health'
               gsap.to(healthBar, {
-                width: this.health + "%",
+                width: recipient.health + "%",
                 duration: 0.8,
                 onComplete: () => {
-                  if (this.health <= 0.1 * this.health) {
+                  if (recipient.health <= 0) {
                     healthBarVisibility.style.visibility = "hidden";
                   }
                 },
@@ -208,5 +232,16 @@ class Sprite {
           });
         break;
     }
+  }
+
+  faint() {
+    //console.log("faint");
+    document.querySelector('#DialogueBox').innerHTML = this.name + " Fainted! ";
+    gsap.to(this.position, {
+      y: this.position.y + 20,
+    })
+    gsap.to(this, {
+      opacity: 0,
+    })
   }
 }

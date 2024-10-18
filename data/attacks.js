@@ -1,12 +1,14 @@
 const attacks = {
     Tackle : {
         name: 'Tackle',
-        damage: 30,
+        damage: 20,
         type: 'Normal',
+        color: 'Black',
     },
     FireBall : {
         name: 'FireBall',
-        damage: 45,
+        damage: 35,
         type: 'Fire',
+        color: 'Orangered',
     }
 }
