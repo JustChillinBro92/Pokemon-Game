@@ -159,7 +159,7 @@ function animate() {
 
   if(battle.initiated) return
 
-  //activates a battle
+  //activate a battle
   if (keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed) {
     for (let i = 0; i < battleZones.length; i++) {
 
@@ -185,10 +185,14 @@ function animate() {
         && 
         Math.random() < 0.01
       ) {
-        console.log("battleZone Activate");
+        //console.log("battleZone Activate");
         window.cancelAnimationFrame(animateId) //deactivates current animation loop
+       
+        audio.Map.stop(); //stops map music
         battle.initiated = true;
-        
+        audio.initBattle.play(); //starts battle initialise music
+        audio.battle.play(); //starts battle music
+
         //flashing animation on battle activation
         gsap.to('#OverlappingDiv', {
           opacity: 1,
@@ -379,3 +383,11 @@ window.addEventListener("keyup", (e) => {
   else if (keys.s.pressed) lastkey = "s";
   else if (keys.d.pressed) lastkey = "d";
 });
+
+let clicked = false;
+addEventListener('click', () => {
+  if(!clicked) {
+    audio.Map.play()
+    clicked = true
+  }
+})

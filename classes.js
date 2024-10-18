@@ -120,7 +120,7 @@ class Monster extends Sprite {
 
   Attack({ attack, recipient, renderedSprites }) {
     document.querySelector("#DialogueBox").style.display = "block";
-    document.querySelector("#DialogueBox").innerHTML = this.name + " used " + attack.name + "...";
+    document.querySelector("#DialogueBox").innerHTML = this.name + " used " + attack.name + "";
 
     let healthBar = "#enemyHealthBar";
     if (this.isEnemy) healthBar = "#playerHealthBar";
@@ -133,6 +133,7 @@ class Monster extends Sprite {
 
     switch (attack.name) {
       case "FireBall":
+        audio.initFireball.play();
         const fireballImg = new Image();
         fireballImg.src = "./img/fireball.png";
 
@@ -157,6 +158,7 @@ class Monster extends Sprite {
 
           onComplete: () => {
             //enemy gets hit
+            audio.FireballHit.play();
             gsap.to(healthBar, {
               width: recipient.health + "%",
               duration: 0.8,
@@ -201,6 +203,7 @@ class Monster extends Sprite {
             //enemy gets hit
             onComplete: () => {
               //arrow function instead of noraml function given so that we can use/increase scope of 'this.health'
+              audio.TackleHit.play();
               gsap.to(healthBar, {
                 width: recipient.health + "%",
                 duration: 0.8,
@@ -243,5 +246,7 @@ class Monster extends Sprite {
     gsap.to(this, {
       opacity: 0,
     })
+    audio.battle.stop();
+    audio.victory.play();
   }
 }

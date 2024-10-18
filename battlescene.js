@@ -67,6 +67,8 @@ function initBattle() {
                   opacity: 0,
                 });
                 battle.initiated = false;
+                audio.victory.stop();
+                audio.Map.play();
               },
             });
           });
@@ -102,6 +104,8 @@ function initBattle() {
                       opacity: 0,
                     });
                     battle.initiated = false;
+                    audio.victory.stop();
+                    audio.Map.play();
                   },
                 });
               });
@@ -123,8 +127,9 @@ function animateBattle() {
   sprite.draw();
   });
 }
-initBattle();     //maintaining this order of calling the two function is must
-animateBattle();
+animate();
+// initBattle();     //maintaining this order of calling the two function is must
+// animateBattle();
 
 document.querySelector("#DialogueBox").addEventListener("click", (e) => {
   if (queue.length > 0) {
