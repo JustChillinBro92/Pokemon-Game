@@ -187,9 +187,10 @@ function animate() {
       ) {
         //console.log("battleZone Activate");
         window.cancelAnimationFrame(animateId) //deactivates current animation loop
-       
         audio.Map.stop(); //stops map music
+
         battle.initiated = true;
+
         audio.initBattle.play(); //starts battle initialise music
         audio.battle.play(); //starts battle music
 
@@ -205,9 +206,11 @@ function animate() {
               opacity: 1,
               duration: 0.4,
               onComplete() {
+
                 //activate a new animation loop (battle sequence)
                 initBattle();
                 animateBattle();
+
                 gsap.to('#OverlappingDiv', {
                   opacity: 0,
                   duration: 0.4

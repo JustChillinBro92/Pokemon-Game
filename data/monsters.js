@@ -12,13 +12,14 @@ const monsters = {
           },
           name: "Emby",
           image: embyImg,
-          attack: [attacks.Tackle, attacks.FireBall],
+          attack: [attacks.Tackle, attacks.FireBall,attacks.DragonBreath],
           frames: {
             max: 4,
             hold: 60,
           },
           scale: 0.9,
           animate: true,
+          health: 150,
     },
 
     draggle : {
@@ -28,7 +29,7 @@ const monsters = {
           },
           name: "Draggle",
           image: draggleImg,
-          attack: [attacks.Tackle, attacks.FireBall],
+          attack: [attacks.Tackle, attacks.FireBall,attacks.DragonBreath],
           frames: {
             max: 4,
             hold: 70,
@@ -36,6 +37,7 @@ const monsters = {
           scale: 0.85,
           animate: true,
           isEnemy: true,
+          health: 150,
     }
 }
 

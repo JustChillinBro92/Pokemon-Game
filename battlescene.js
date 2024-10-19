@@ -26,6 +26,7 @@ function initBattle() {
 
   Draggle = new Monster(monsters.draggle);
   Emby = new Monster(monsters.emby);
+
   renderedSprites = [Draggle, Emby];
   queue = []
 
@@ -127,9 +128,9 @@ function animateBattle() {
   sprite.draw();
   });
 }
-animate();
-// initBattle();     //maintaining this order of calling the two function is must
-// animateBattle();
+//animate();
+ initBattle();     //maintaining this order of calling the two function is must
+ animateBattle();
 
 document.querySelector("#DialogueBox").addEventListener("click", (e) => {
   if (queue.length > 0) {
