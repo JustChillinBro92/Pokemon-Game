@@ -140,6 +140,8 @@ const battle = {
   initiated: false
 }
 
+let grassAudioPlay = false;
+
 function animate() {
   const animateId = window.requestAnimationFrame(animate);
   //console.log("aimate");
@@ -176,6 +178,22 @@ function animate() {
           ) -
         Math.max(player.position.y, battleZone.position.y));
 
+      if(RectangularCollision({
+        rectangle1: player,
+        rectangle2: battleZone,
+      }) &&
+      OverlappingArea > (player.height * player.width) / 2) {
+
+        if(!grassAudioPlay) {
+          grassAudioPlay = true;
+          audio.grass.play();
+        }
+
+        setTimeout(() => {
+          grassAudioPlay = false;
+        }, 100)
+      }
+      
       if (
         RectangularCollision({
           rectangle1: player,

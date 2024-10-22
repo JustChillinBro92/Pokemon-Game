@@ -114,7 +114,7 @@ class Monster extends Sprite {
       rotation,
     });
     // Store the initial position
-    this.initialPosition = { x: position.x, y: position.y };
+    this.initialPosition = {x: position.x , y: position.y}
     this.health = health;
     this.maxHealth = this.health
     this.name = name;
@@ -127,15 +127,15 @@ class Monster extends Sprite {
     if (this.isEnemy) healthBar = "#playerHealthBar";
     const healthBarVisibility = document.querySelector(healthBar);
   
-    const healthBarPercentage = (recipient.health/recipient.maxHealth) * 98.5
-    if(recipient.health <= 60){
+    //const healthBarPercentage = (recipient.health/recipient.maxHealth) * 98.5
+    if(recipient.health <= 60) {
       healthBarVisibility.style.backgroundColor = "yellow";
       console.log("color change");
 
-    if(recipient.health <= 20){
+    if(recipient.health <= 25){
         healthBarVisibility.style.backgroundColor = "red";
         console.log("color change");
-      }
+      } 
     }
   }
 
@@ -326,9 +326,10 @@ class Monster extends Sprite {
     })
     gsap.to(this, {
       opacity: 0,
-    })
-    gsap.to(this.position, {
-      y: this.position.y 
+      duration: 1,
+      onComplete: () => {
+        this.position.y = this.initialPosition.y;
+      }
     })
     audio.battle.stop();
     audio.victory.play();

@@ -10,27 +10,39 @@ const BattleBackground = new Sprite({
 });
 
 //creating the monster sprites
-let Draggle;
-let Emby;
+let enemy;
+let partner;
 let renderedSprites; //array for storing rendered out projectile attacks
 let queue; //queue for pushing enemy attacks
 
 function initBattle() {
   document.querySelector("#Interface").style.display = "block";
+  document.querySelector("#encounterBox").style.display = "block";
+
   document.querySelector("#DialogueBox").style.display = "none";
   document.querySelector("#enemyHealthBar").style.display = "block";
   document.querySelector("#playerHealthBar").style.display = "block";
+  document.querySelector("#enemyHealthBar").style.backgroundColor = "rgb(58, 227, 58)";
+  document.querySelector("#playerHealthBar").style.backgroundColor = "rgb(58, 227, 58)";
+
   document.querySelector("#enemyHealthBar").style.width = "98.5%";
   document.querySelector("#playerHealthBar").style.width = "98.5%";
   document.querySelector("#attacksBox").replaceChildren(); //removes the appended attack buttons with each battle
 
-  Draggle = new Monster(monsters.draggle);
-  Emby = new Monster(monsters.emby);
+  enemy = new Monster(getRandomMonster());
+  partner = new Monster(playerMonsters.emby);
+  enemy.health = enemy.maxHealth;
+  partner.health = partner.maxHealth;
 
-  renderedSprites = [Draggle, Emby];
+  document.querySelector("#encounterBox").innerHTML = "A Wild " + enemy.name + " Appeared! ";
+
+  document.querySelector("#enemyMon").innerHTML = enemy.name;
+  document.querySelector("#playerMon").innerHTML = partner.name;
+
+  renderedSprites = [enemy, partner];
   queue = []
 
-  Emby.attack.forEach((attack) => {
+  partner.attack.forEach((attack) => {
     const button = document.createElement("button");
     button.innerHTML = attack.name;
     document.querySelector("#attacksBox").append(button);
@@ -46,15 +58,15 @@ function initBattle() {
         //console.log(attacks[e.currentTarget.innerHTML]);
         const selectedAttack = attacks[e.currentTarget.innerHTML];
 
-        Emby.Attack({
+        partner.Attack({
           attack: selectedAttack,
-          recipient: Draggle,
+          recipient: enemy,
           renderedSprites,
         });
-
-        if (Draggle.health <= 0) {
+        
+        if (enemy.health <= 0) {
           queue.push(() => {
-            Draggle.faint();
+            enemy.faint();
           });
           queue.push(() => {
             gsap.to("#OverlappingDiv", {
@@ -77,21 +89,21 @@ function initBattle() {
 
         //enemy attacks
         const randomAttack =
-          Draggle.attack[Math.floor(Math.random() * Draggle.attack.length)];
+          enemy.attack[Math.floor(Math.random() * enemy.attack.length)];
 
           queue.push(() => {
-            Draggle.Attack({
+            enemy.Attack({
               attack: randomAttack,
-              recipient: Emby,
+              recipient: partner,
               renderedSprites,
             });
 
-            console.log(queue.length);
+            //console.log(queue.length);
 
-            if (Emby.health <= 0) {
+            if (partner.health <= 0) {
             // after each enemy attack check player monster's health
               queue.push(() => {
-                Emby.faint();
+                partner.faint();
               });
               queue.push(() => {
                 gsap.to("#OverlappingDiv", {
@@ -128,9 +140,13 @@ function animateBattle() {
   sprite.draw();
   });
 }
-//animate();
- initBattle();     //maintaining this order of calling the two function is must
- animateBattle();
+animate();
+//initBattle();     //maintaining this order of calling the two function is must
+//animateBattle();
+
+document.querySelector("#encounterBox").addEventListener("click", (e) => {
+  e.currentTarget.style.display = "none";
+})
 
 document.querySelector("#DialogueBox").addEventListener("click", (e) => {
   if (queue.length > 0) {

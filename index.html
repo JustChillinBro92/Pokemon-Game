@@ -55,7 +55,8 @@
 
 		<div id="Interface" style="display: none;">
 			<!-- Enemy's Monster Health Bar -->
-			<div style="
+			<div
+				style="
 				background-color: white;
 				width: 250px;
 				position: absolute;
@@ -65,7 +66,7 @@
 				border-radius: 10px;
 				padding: 15px
 				">
-				<h1 style="font-size: 17px;">Draggle</h1>
+				<h1 id="enemyMon" style="font-size: 17px;"></h1>
 				<div style="
 					display: flex;
 					align-items: center;  
@@ -102,7 +103,8 @@
 			</div>
 
 			<!-- Player's Monster Health Bar -->
-			<div style="
+			<div 
+				style="
 				background-color: white;
 				width: 250px;
 				position: absolute;
@@ -112,7 +114,7 @@
 				border-radius: 10px;
 				padding: 15px
 				">
-				<h1 style="font-size: 17px;">Emby</h1>
+				<h1 id="playerMon" style="font-size: 17px;"></h1>
 				<div style="
 					display: flex;
 					align-items: center;	   
@@ -158,6 +160,7 @@
 				border-top: 2px black solid;
 				display: flex;
 				">
+
 				<!-- For Narrating the turns -->
 				<div id="DialogueBox" style="
 					position: absolute;
@@ -172,6 +175,20 @@
 					cursor: pointer;
 					">
 				</div>
+				<div 
+					id="encounterBox"
+					style="
+					position: absolute;
+					background-color: white;
+					font-size: 17px;
+					top: 0;
+					bottom: 0;
+					left: 0;
+					right: 0;
+					padding: 12px;
+					display: none;
+					">A Wild Draggle Appeared!</div>
+
 				<!-- Attack Panel -->
 				<div id="attacksBox" style="
 					width: 66.66%;
@@ -180,7 +197,9 @@
 					padding: 2px
 					">
 				</div>
-				<div style="
+				<div
+					id="attackTypeBox" 
+					style="
 					width: 33.33%;
 					border-left: 2px black solid;
 					display: flex;
