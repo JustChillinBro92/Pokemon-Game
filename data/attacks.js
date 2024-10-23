@@ -13,7 +13,7 @@ const attacks = {
     },
     DragonBreath : {
         name: 'DragonBreath',
-        damage: 65,
+        damage: 200,
         type: 'Dragon',
         color: 'Purple',
     }

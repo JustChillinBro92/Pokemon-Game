@@ -24,6 +24,11 @@ const audio = {
         html5: true,
         volume: 0.8
     }),
+    run: new Howl({
+        src: './audio/run.wav',
+        html5: true,
+        volume: 0.15,
+    }),
     TackleHit : new Howl({
         src: './audio/tackleHit.wav',
         html5: true,

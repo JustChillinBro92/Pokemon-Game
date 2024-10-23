@@ -18,7 +18,8 @@ let queue; //queue for pushing enemy attacks
 function initBattle() {
   document.querySelector("#Interface").style.display = "block";
   document.querySelector("#encounterBox").style.display = "block";
-
+  document.querySelector("#BattleBox").style.display = "flex";
+  
   document.querySelector("#DialogueBox").style.display = "none";
   document.querySelector("#enemyHealthBar").style.display = "block";
   document.querySelector("#playerHealthBar").style.display = "block";
@@ -34,7 +35,59 @@ function initBattle() {
   enemy.health = enemy.maxHealth;
   partner.health = partner.maxHealth;
 
+
   document.querySelector("#encounterBox").innerHTML = "A Wild " + enemy.name + " Appeared! ";
+
+  document.querySelector("#encounterBox").addEventListener("click", () => {
+    console.log("box clicked")
+    document.querySelector("#BattleBox").style.opacity = "1";
+    document.querySelector("#BattleBox").style.visibility = "visible";
+  })
+
+   document.querySelector("#fight").addEventListener("click", () => {
+     document.querySelector("#BattleBox").style.opacity = "0";
+     document.querySelector("#BattleBox").style.visibility = "hidden"
+     document.querySelector("#encounterBox").style.display = "none";
+   })
+  
+   
+   document.querySelector("#run").addEventListener("click", () => {
+
+    document.querySelector("#BattleBox").style.visibility = "hidden"
+    document.querySelector("#encounterBox").style.display = "none";
+    // document.querySelector("#attackTypeBox").style.display = "none";
+    // document.querySelector("#attacksBox").style.display = "none"
+    document.querySelector("#DialogueBox").innerHTML = " Ran away safely! ";
+    document.querySelector("#DialogueBox").styale.display = "block";
+
+    audio.run.volume = 0.15;
+    audio.run.currentTime = 0;
+
+    if(!audio.run.paused) {
+      audio.run.play();
+      audio.run.pause();
+    }
+    
+    queue.push(()=> {
+      gsap.to("#OverlappingDiv", {
+        opacity: 1,
+        OnComplete: () => {
+          window.cancelAnimationFrame(animateBattleId);
+          animate();
+
+          document.querySelector("#Interface").style.display = "none";
+  
+          gsap.to("#OverlappingDiv", {
+            opacity: 0,
+          });
+
+          battle.initiated = false;
+          audio.battle.stop();
+          audio.Map.play();
+        },
+      })
+    })
+    })
 
   document.querySelector("#enemyMon").innerHTML = enemy.name;
   document.querySelector("#playerMon").innerHTML = partner.name;
@@ -143,10 +196,6 @@ function animateBattle() {
 animate();
 //initBattle();     //maintaining this order of calling the two function is must
 //animateBattle();
-
-document.querySelector("#encounterBox").addEventListener("click", (e) => {
-  e.currentTarget.style.display = "none";
-})
 
 document.querySelector("#DialogueBox").addEventListener("click", (e) => {
   if (queue.length > 0) {

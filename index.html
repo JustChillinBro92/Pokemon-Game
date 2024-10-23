@@ -175,6 +175,7 @@
 					cursor: pointer;
 					">
 				</div>
+				<!-- Narrating which monster encountered -->
 				<div 
 					id="encounterBox"
 					style="
@@ -187,7 +188,38 @@
 					right: 0;
 					padding: 12px;
 					display: none;
-					">A Wild Draggle Appeared!</div>
+					">
+				</div>
+				<!-- shows options available for player during battle -->
+				<div 
+					id="BattleBox"
+					style="
+					position: absolute;
+					background-color: white;
+					font-size: 17px;
+					top: 0;
+					bottom: 0;
+					left: 0;
+					right: 0;
+					padding: 12px;
+					display: flex;
+					justify-content: space-between;
+					opacity: 0;
+					visibility: hidden;
+					">
+					What Will You Do?
+					<div 
+					id="UserChoiceBox"
+					style="
+					width: 45%;
+					display: grid;
+					grid-template-columns: repeat(2,1fr);
+					">	<button id="fight">Fight</button>
+						<button id="pokemon">Pokemon</button>
+						<button id="bag">Bag</button>
+						<button id="run">Run</button>
+					</div>	
+				</div>
 
 				<!-- Attack Panel -->
 				<div id="attacksBox" style="
@@ -197,6 +229,7 @@
 					padding: 2px
 					">
 				</div>
+				<!-- shows the type of attacks of player's monsters -->
 				<div
 					id="attackTypeBox" 
 					style="
