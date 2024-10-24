@@ -55,10 +55,10 @@ function initBattle() {
 
     document.querySelector("#BattleBox").style.visibility = "hidden"
     document.querySelector("#encounterBox").style.display = "none";
-    // document.querySelector("#attackTypeBox").style.display = "none";
-    // document.querySelector("#attacksBox").style.display = "none"
+    //document.querySelector("#attackTypeBox").style.display = "none";
+    //document.querySelector("#attacksBox").style.display = "none"
     document.querySelector("#DialogueBox").innerHTML = " Ran away safely! ";
-    document.querySelector("#DialogueBox").styale.display = "block";
+    document.querySelector("#DialogueBox").style.display = "block";
 
     audio.run.volume = 0.15;
     audio.run.currentTime = 0;

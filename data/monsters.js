@@ -10,6 +10,9 @@ draggleImg.src = "./img/draggleSprite.png";
 const draggle2Img = new Image();
 draggle2Img.src = "./img/draggleSprite2.png";
 
+const terradonImg = new Image();
+terradonImg.src = "./img/TerradonSprite.png";
+
 const playerMonsters = {
   emby : {
     name: "Emby",
@@ -34,7 +37,7 @@ const monsters = {
           max: 4,
           hold: 60,
         },
-        scale: 1,
+        scale: 0.88,
         animate: true,
         isEnemy: true,
         health: 170,
@@ -61,6 +64,19 @@ const monsters = {
             hold: 70,
           },
           scale: 0.88,
+          animate: true,
+          isEnemy: true,
+          health: 180,
+        },
+      terradon: {
+          name: "Terradon",
+          image: terradonImg,
+          attack: [attacks.Tackle, attacks.FireBall,attacks.DragonBreath],
+          frames: {
+            max: 4,
+            hold: 70,
+          },
+          scale: 1,
           animate: true,
           isEnemy: true,
           health: 180,
